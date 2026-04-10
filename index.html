@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AIron – AIパーソナルトレーナー（架空サービス）</title>
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent: #6c63ff;
+      --accent2: #ff6584;
+      --neon: #00f5d4;
+      --dark: #0d0d1a;
+      --dark2: #13132b;
+      --dark3: #1a1a38;
+      --text: #e8e8f5;
+      --muted: #8888aa;
+      --radius: 16px;
+      --shadow: 0 8px 40px rgba(108,99,255,0.25);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', 'Hiragino Sans', sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; }
+
+    /* ===== FICTIONAL BADGE ===== */
+    .fiction-bar {
+      background: repeating-linear-gradient(
+        -45deg,
+        #ff6584 0px, #ff6584 10px,
+        #ffb347 10px, #ffb347 20px
+      );
+      color: #0d0d1a;
+      font-weight: 800;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-align: center;
+      padding: 8px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .fiction-bar span {
+      background: #0d0d1a;
+      color: #ff6584;
+      padding: 2px 10px;
+      border-radius: 4px;
+      margin: 0 8px;
+    }
+
+    /* ===== NAVBAR ===== */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 6vw;
+      background: rgba(13,13,26,0.85);
+      backdrop-filter: blur(16px);
+      position: sticky;
+      top: 37px;
+      z-index: 900;
+      border-bottom: 1px solid rgba(108,99,255,0.15);
+    }
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, var(--accent), var(--neon));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .logo sub {
+      font-size: 0.55rem;
+      font-weight: 400;
+      -webkit-text-fill-color: var(--accent2);
+      background: none;
+      -webkit-background-clip: unset;
+      background-clip: unset;
+      vertical-align: super;
+      letter-spacing: 0.05em;
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: linear-gradient(135deg, var(--accent), #9b59b6);
+      padding: 10px 24px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(108,99,255,0.5); }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 90vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 60px;
+      padding: 80px 8vw 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 55% 60% at 20% 50%, rgba(108,99,255,0.28) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 50% at 85% 30%, rgba(0,245,212,0.12) 0%, transparent 70%),
+        var(--dark);
+      z-index: 0;
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(108,99,255,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(108,99,255,0.06) 1px, transparent 1px);
+      background-size: 60px 60px;
+      z-index: 0;
+    }
+    .hero-content {
+      position: relative; z-index: 1;
+      text-align: left;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(108,99,255,0.18);
+      border: 1px solid rgba(108,99,255,0.4);
+      color: var(--neon);
+      padding: 6px 18px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 4.5vw, 4rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+    .hero h1 .highlight {
+      background: linear-gradient(135deg, var(--accent), var(--neon));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 460px;
+      margin: 0 0 36px;
+      line-height: 1.75;
+    }
+    .hero-btns {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #9b59b6);
+      color: #fff;
+      padding: 16px 36px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 1rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: var(--shadow);
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(108,99,255,0.5); }
+    .btn-ghost {
+      background: transparent;
+      border: 2px solid rgba(108,99,255,0.5);
+      color: var(--text);
+      padding: 14px 34px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--accent); background: rgba(108,99,255,0.1); }
+    .hero-note { margin-top: 16px; font-size: 0.8rem; color: var(--muted); }
+
+    /* Hero Visual (image side) */
+    .hero-visual {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-img-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 560px;
+    }
+    /* 光るボーダーフレーム */
+    .hero-img-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 26px;
+      background: linear-gradient(135deg, var(--accent), var(--neon), var(--accent2));
+      z-index: 0;
+      opacity: 0.7;
+    }
+    .hero-img-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      background: linear-gradient(
+        to right,
+        var(--dark) 0%,
+        transparent 18%,
+        transparent 100%
+      );
+      z-index: 2;
+      pointer-events: none;
+    }
+    .hero-img-wrap img {
+      display: block;
+      width: 100%;
+      border-radius: 24px;
+      position: relative;
+      z-index: 1;
+      object-fit: cover;
+      aspect-ratio: 4 / 3;
+      box-shadow:
+        0 0 60px rgba(108,99,255,0.35),
+        0 30px 60px rgba(0,0,0,0.5);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    .hero-img-wrap:hover img {
+      transform: scale(1.02);
+      box-shadow:
+        0 0 80px rgba(108,99,255,0.5),
+        0 36px 70px rgba(0,0,0,0.55);
+    }
+    /* 画像上のフローティングバッジ */
+    .img-badge {
+      position: absolute;
+      z-index: 3;
+      background: rgba(13,13,26,0.88);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(108,99,255,0.4);
+      border-radius: 14px;
+      padding: 10px 16px;
+      font-size: 0.78rem;
+      white-space: nowrap;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+      animation: floatY 3s ease-in-out infinite;
+    }
+    .img-badge .ib-icon { font-size: 1.1rem; display: block; margin-bottom: 3px; }
+    .img-badge strong { display: block; font-size: 0.88rem; color: var(--text); }
+    .img-badge span { color: var(--muted); font-size: 0.72rem; }
+    .img-badge.top-left  { top: -18px; left: 16px;  animation-delay: 0s; }
+    .img-badge.bot-right { bottom: -18px; right: 16px; animation-delay: 1.5s; }
+
+    /* App mockup (旧・他セクションで再利用) */
+    .mockup-phone {
+      width: 260px;
+      background: var(--dark3);
+      border-radius: 36px;
+      border: 2px solid rgba(108,99,255,0.3);
+      padding: 16px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(108,99,255,0.2);
+      display: inline-block;
+    }
+    .mockup-screen {
+      background: var(--dark2);
+      border-radius: 24px;
+      overflow: hidden;
+      padding: 20px 16px;
+    }
+    .mockup-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--neon));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+    }
+    .mockup-greeting { font-size: 0.78rem; }
+    .mockup-greeting strong { display: block; font-size: 0.95rem; }
+    .ai-card {
+      background: linear-gradient(135deg, rgba(108,99,255,0.3), rgba(0,245,212,0.1));
+      border: 1px solid rgba(108,99,255,0.3);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .ai-card .label { font-size: 0.65rem; color: var(--neon); font-weight: 700; letter-spacing: 0.08em; margin-bottom: 6px; }
+    .ai-card .value { font-size: 1.1rem; font-weight: 800; }
+    .progress-bar-wrap { margin-top: 8px; }
+    .progress-label { font-size: 0.65rem; color: var(--muted); display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .progress-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent), var(--neon)); }
+    .stat-row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 8px; margin-bottom: 12px;
+    }
+    .stat-box {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+    .stat-box .num { font-size: 1.2rem; font-weight: 800; color: var(--accent); }
+    .stat-box .unit { font-size: 0.6rem; color: var(--muted); }
+    .workout-list { display: flex; flex-direction: column; gap: 6px; }
+    .workout-item {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 8px; padding: 8px 10px;
+      font-size: 0.72rem;
+    }
+    .workout-icon { font-size: 1rem; }
+    .workout-done { color: var(--neon); margin-left: auto; font-size: 0.7rem; }
+
+    @keyframes floatY {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* ===== SECTION BASE ===== */
+    section { padding: 100px 6vw; }
+    .section-label {
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em;
+      color: var(--neon); text-transform: uppercase; margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 900; letter-spacing: -0.03em; line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      color: var(--muted); font-size: 1rem; max-width: 500px; margin-bottom: 60px;
+    }
+    .text-center { text-align: center; }
+    .text-center .section-sub { margin-left: auto; margin-right: auto; }
+
+    /* ===== STATS BAR ===== */
+    .stats-bar {
+      background: var(--dark2);
+      border-top: 1px solid rgba(108,99,255,0.15);
+      border-bottom: 1px solid rgba(108,99,255,0.15);
+      padding: 40px 6vw;
+    }
+    .stats-inner {
+      display: flex; justify-content: space-around; flex-wrap: wrap; gap: 32px;
+      max-width: 900px; margin: 0 auto; text-align: center;
+    }
+    .stat-item .big {
+      font-size: 2.8rem; font-weight: 900; letter-spacing: -0.04em;
+      background: linear-gradient(135deg, var(--accent), var(--neon));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .stat-item p { color: var(--muted); font-size: 0.88rem; margin-top: 4px; }
+
+    /* ===== FEATURES ===== */
+    .features { background: var(--dark2); }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .feature-card {
+      background: var(--dark3);
+      border: 1px solid rgba(108,99,255,0.15);
+      border-radius: var(--radius);
+      padding: 32px;
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--neon));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s;
+    }
+    .feature-card:hover { transform: translateY(-6px); border-color: rgba(108,99,255,0.4); box-shadow: var(--shadow); }
+    .feature-card:hover::before { transform: scaleX(1); }
+    .feature-icon {
+      font-size: 2.2rem; margin-bottom: 18px;
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 60px; height: 60px;
+      background: rgba(108,99,255,0.12);
+      border-radius: 14px;
+    }
+    .feature-card h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 10px; }
+    .feature-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.65; }
+
+    /* ===== HOW IT WORKS ===== */
+    .how-inner {
+      max-width: 860px; margin: 0 auto;
+      display: flex; flex-direction: column; gap: 0;
+    }
+    .step {
+      display: grid; grid-template-columns: 80px 1fr;
+      gap: 28px; align-items: start;
+      padding: 32px 0;
+      border-left: 2px solid rgba(108,99,255,0.2);
+      padding-left: 40px;
+      margin-left: 20px;
+      position: relative;
+    }
+    .step::before {
+      content: '';
+      position: absolute; left: -10px; top: 32px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--neon));
+    }
+    .step:last-child { border-color: transparent; }
+    .step-num {
+      font-size: 3rem; font-weight: 900; color: rgba(108,99,255,0.25);
+      line-height: 1;
+    }
+    .step-content h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; margin-top: 12px; }
+    .step-content p { color: var(--muted); font-size: 0.92rem; }
+
+    /* ===== SCREENSHOTS GALLERY ===== */
+    .gallery-section { background: var(--dark2); }
+    .screens {
+      display: flex; gap: 24px; overflow-x: auto;
+      padding-bottom: 16px;
+      justify-content: center;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(108,99,255,0.4) transparent;
+    }
+    .screen-card {
+      flex: 0 0 220px;
+      background: var(--dark3);
+      border-radius: 24px;
+      border: 1px solid rgba(108,99,255,0.2);
+      padding: 20px 16px;
+      text-align: center;
+    }
+    .screen-title { font-size: 0.75rem; color: var(--neon); font-weight: 700; margin-bottom: 14px; letter-spacing: 0.08em; }
+    .screen-visual {
+      background: var(--dark2);
+      border-radius: 14px;
+      padding: 16px;
+      min-height: 180px;
+      display: flex; flex-direction: column; justify-content: center; gap: 10px;
+    }
+    /* mini chart */
+    .mini-chart {
+      display: flex; align-items: flex-end; gap: 5px; height: 70px; justify-content: center;
+    }
+    .bar {
+      width: 18px; border-radius: 4px 4px 0 0;
+      background: linear-gradient(180deg, var(--accent), rgba(108,99,255,0.3));
+      transition: height 0.3s;
+    }
+    .mini-ring {
+      width: 80px; height: 80px; margin: 0 auto;
+      border-radius: 50%;
+      background: conic-gradient(var(--neon) 0% 72%, rgba(255,255,255,0.07) 72%);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .mini-ring::after {
+      content: '72%';
+      position: absolute;
+      font-size: 0.9rem; font-weight: 900;
+    }
+    .mini-ring-inner {
+      width: 56px; height: 56px; border-radius: 50%; background: var(--dark2);
+    }
+    .food-item {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.04); border-radius: 8px; padding: 7px 10px;
+      font-size: 0.72rem; text-align: left;
+    }
+    .food-cal { margin-left: auto; color: var(--accent); font-weight: 700; font-size: 0.7rem; }
+
+    /* ===== PRICING ===== */
+    .pricing-cards {
+      display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;
+      max-width: 950px; margin: 0 auto;
+    }
+    .pricing-card {
+      flex: 1 1 260px; max-width: 300px;
+      background: var(--dark2);
+      border: 1px solid rgba(108,99,255,0.2);
+      border-radius: var(--radius);
+      padding: 36px 28px;
+      position: relative;
+      transition: transform 0.25s;
+    }
+    .pricing-card.featured {
+      background: linear-gradient(160deg, rgba(108,99,255,0.25), rgba(0,245,212,0.08));
+      border-color: var(--accent);
+      transform: scale(1.04);
+    }
+    .pricing-card.featured:hover { transform: scale(1.04) translateY(-4px); }
+    .pricing-card:not(.featured):hover { transform: translateY(-4px); }
+    .popular-tag {
+      position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--accent), var(--neon));
+      color: #0d0d1a; padding: 4px 16px; border-radius: 50px;
+      font-size: 0.72rem; font-weight: 800; white-space: nowrap;
+    }
+    .plan-name { font-size: 0.82rem; font-weight: 700; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px; }
+    .plan-price { font-size: 2.6rem; font-weight: 900; letter-spacing: -0.04em; line-height: 1; }
+    .plan-price sub { font-size: 1rem; font-weight: 400; color: var(--muted); }
+    .plan-price .per { font-size: 0.85rem; font-weight: 400; color: var(--muted); margin-left: 4px; }
+    .plan-desc { color: var(--muted); font-size: 0.85rem; margin: 14px 0 24px; }
+    .plan-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+    .plan-features li {
+      display: flex; gap: 10px; font-size: 0.88rem;
+      align-items: flex-start;
+    }
+    .plan-features li::before { content: '✓'; color: var(--neon); font-weight: 900; flex-shrink: 0; }
+    .plan-features li.no { color: var(--muted); }
+    .plan-features li.no::before { content: '–'; color: rgba(255,255,255,0.2); }
+    .btn-plan {
+      display: block; text-align: center;
+      padding: 14px; border-radius: 50px;
+      font-weight: 800; font-size: 0.92rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-plan.solid {
+      background: linear-gradient(135deg, var(--accent), #9b59b6);
+      color: #fff;
+    }
+    .btn-plan.solid:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(108,99,255,0.5); }
+    .btn-plan.outline {
+      border: 2px solid rgba(108,99,255,0.4);
+      color: var(--text);
+    }
+    .btn-plan.outline:hover { border-color: var(--accent); background: rgba(108,99,255,0.1); }
+
+    /* ===== TESTIMONIALS ===== */
+    .testimonials { background: var(--dark2); }
+    .testi-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px; max-width: 960px; margin: 0 auto;
+    }
+    .testi-card {
+      background: var(--dark3);
+      border: 1px solid rgba(108,99,255,0.15);
+      border-radius: var(--radius);
+      padding: 28px;
+    }
+    .stars { color: #ffd700; font-size: 0.9rem; margin-bottom: 12px; }
+    .testi-card blockquote { color: var(--muted); font-size: 0.92rem; line-height: 1.7; margin-bottom: 20px; }
+    .testi-author { display: flex; align-items: center; gap: 12px; }
+    .testi-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      border: 2px solid rgba(108,99,255,0.3);
+    }
+    .testi-name { font-weight: 700; font-size: 0.92rem; }
+    .testi-role { font-size: 0.78rem; color: var(--muted); }
+
+    /* ===== FAQ ===== */
+    .faq-list { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+    .faq-item {
+      background: var(--dark2);
+      border: 1px solid rgba(108,99,255,0.15);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .faq-q {
+      width: 100%; background: none; border: none; color: var(--text);
+      text-align: left; padding: 20px 24px;
+      font-size: 0.95rem; font-weight: 700;
+      cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+      gap: 12px;
+    }
+    .faq-q::after { content: '+'; font-size: 1.4rem; color: var(--accent); flex-shrink: 0; }
+    .faq-item.open .faq-q::after { content: '−'; }
+    .faq-a { padding: 0 24px 20px; color: var(--muted); font-size: 0.88rem; line-height: 1.7; display: none; }
+    .faq-item.open .faq-a { display: block; }
+
+    /* ===== CTA SECTION ===== */
+    .cta-section {
+      text-align: center;
+      background: linear-gradient(160deg, rgba(108,99,255,0.2) 0%, rgba(0,245,212,0.06) 100%);
+      border-top: 1px solid rgba(108,99,255,0.2);
+      border-bottom: 1px solid rgba(108,99,255,0.2);
+    }
+    .cta-section h2 {
+      font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 900;
+      letter-spacing: -0.03em; margin-bottom: 16px;
+    }
+    .cta-section p { color: var(--muted); font-size: 1rem; margin-bottom: 36px; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--dark2);
+      border-top: 1px solid rgba(108,99,255,0.1);
+      padding: 48px 6vw 32px;
+    }
+    .footer-inner {
+      display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between;
+      max-width: 1100px; margin: 0 auto 40px;
+    }
+    .footer-brand .logo { font-size: 1.4rem; }
+    .footer-brand p { color: var(--muted); font-size: 0.85rem; margin-top: 10px; max-width: 220px; }
+    .footer-col h4 { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 14px; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .footer-col a { color: var(--muted); font-size: 0.88rem; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--text); }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding-top: 24px;
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+      color: var(--muted); font-size: 0.78rem;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .fiction-note {
+      background: rgba(255,101,132,0.12);
+      border: 1px solid rgba(255,101,132,0.3);
+      color: #ff6584;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s, transform 0.6s; }
+    .fade-in.visible { opacity: 1; transform: none; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 48px;
+        padding: 60px 6vw;
+      }
+      .hero-content { text-align: center; }
+      .hero p { margin: 0 auto 36px; }
+      .hero-btns { justify-content: center; }
+      .hero-visual { order: -1; }
+      .hero-img-wrap { max-width: 420px; margin: 0 auto; }
+      .hero-img-wrap::after { display: none; }
+      .img-badge.top-left  { top: -14px; left: 8px; }
+      .img-badge.bot-right { bottom: -14px; right: 8px; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .pricing-card.featured { transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ★ 架空サービス表示バー -->
+  <div class="fiction-bar">
+    ⚠️ <span>架空のサービスです</span> これはポートフォリオ用に制作したデモサイトです。実際のサービスは存在しません。<span>FICTIONAL / DEMO ONLY</span> ⚠️
+  </div>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">AIron<sub>DEMO</sub></div>
+    <ul class="nav-links">
+      <li><a href="#features">機能</a></li>
+      <li><a href="#how">使い方</a></li>
+      <li><a href="#pricing">料金</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <a href="#pricing" class="nav-cta">無料で始める</a>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+
+    <!-- 左：テキスト -->
+    <div class="hero-content">
+      <div class="badge">✦ AI PERSONAL TRAINER</div>
+      <h1>あなただけの<br/><span class="highlight">AIトレーナー</span>が<br/>理想の体を作る</h1>
+      <p>目標・体型・ライフスタイルをAIが分析し、最適なトレーニングと食事プランを毎日自動生成。ジムに行かなくても、プロ級のコーチングを。</p>
+      <div class="hero-btns">
+        <a href="#pricing" class="btn-primary">🚀 無料で始める（架空）</a>
+        <a href="#how" class="btn-ghost">▶ デモを見る</a>
+      </div>
+      <p class="hero-note">※ クレジットカード不要 ・ これは架空のサービスです</p>
+    </div>
+
+    <!-- 右：トップ画像 -->
+    <div class="hero-visual">
+      <div class="hero-img-wrap">
+        <!-- 浮かぶバッジ（上） -->
+        <div class="img-badge top-left">
+          <span class="ib-icon">📈</span>
+          <strong>+12% 筋力向上</strong>
+          <span>先月比</span>
+        </div>
+
+        <img src="images/top.jpeg" alt="AIパーソナルトレーナーアプリ AIron のイメージ写真（架空）" />
+
+        <!-- 浮かぶバッジ（下） -->
+        <div class="img-badge bot-right">
+          <span class="ib-icon">🔥</span>
+          <strong>連続 28日継続中！</strong>
+          <span>トレーニング達成</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item fade-in">
+        <div class="big">120,000+</div>
+        <p>架空のユーザー数</p>
+      </div>
+      <div class="stat-item fade-in">
+        <div class="big">4.9 ★</div>
+        <p>架空のアプリストア評価</p>
+      </div>
+      <div class="stat-item fade-in">
+        <div class="big">-8.4kg</div>
+        <p>架空の平均減量（3ヶ月）</p>
+      </div>
+      <div class="stat-item fade-in">
+        <div class="big">94%</div>
+        <p>架空の継続率</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <div class="text-center fade-in">
+      <div class="section-label">Features</div>
+      <h2 class="section-title">AIが、あなたの専属コーチになる</h2>
+      <p class="section-sub">一般的なフィットネスアプリとは違い、AIronはあなたの体型・目標・生活リズムを学習し続けます。</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🧠</div>
+        <h3>パーソナライズドAI分析</h3>
+        <p>体組成・睡眠・ストレスレベルまでを考慮した、世界でひとつのメニューを毎日生成。汎用プランとは一線を画します。</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">📊</div>
+        <h3>リアルタイム進捗トラッキング</h3>
+        <p>トレーニング強度・消費カロリー・筋肉量の変化をグラフで可視化。データドリブンで最短ルートを走ります。</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🍱</div>
+        <h3>食事プラン自動生成</h3>
+        <p>好きな食材・アレルギー・目標カロリーを入力するだけで、AIが1週間分のレシピと買い物リストを作成します。</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">📹</div>
+        <h3>フォームチェックAI</h3>
+        <p>スマホカメラで撮影するだけでAIがフォームを分析。怪我のリスクを下げながら効率的な動きを習得できます。</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🤝</div>
+        <h3>チャットコーチング</h3>
+        <p>「今日やる気が出ない」「体が痛い」など、どんな相談にも24時間AIトレーナーが優しく答えます。</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🏆</div>
+        <h3>チャレンジ & コミュニティ</h3>
+        <p>毎週開催の架空チャレンジや、同じ目標を持つ仲間とのグループ機能で、モチベーションを維持します。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it Works -->
+  <section id="how">
+    <div class="fade-in text-center">
+      <div class="section-label">How it Works</div>
+      <h2 class="section-title">たった3ステップで<br/>AIトレーナーが起動</h2>
+    </div>
+    <div class="how-inner">
+      <div class="step fade-in">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <h3>プロフィールを入力する</h3>
+          <p>身長・体重・目標（減量/筋肉増加/体力向上）・生活スタイルを入力。アンケートは約3分で完了します。アレルギーや苦手な運動も事前に設定できます。</p>
+        </div>
+      </div>
+      <div class="step fade-in">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <h3>AIがプランを自動設計する</h3>
+          <p>入力データをもとに、独自のAIモデルが最適なトレーニングメニューと食事プランを生成。週ごとに難易度・内容を自動調整し、停滞を防ぎます。</p>
+        </div>
+      </div>
+      <div class="step fade-in">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <h3>毎日こなして、結果を出す</h3>
+          <p>アプリの指示に従うだけでOK。記録をつけるとAIが即座に分析し、翌日のプランに反映。続けるほど精度が上がる「学習型コーチング」を体験してください。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery / Screens -->
+  <section class="gallery-section">
+    <div class="text-center fade-in">
+      <div class="section-label">App Screens</div>
+      <h2 class="section-title">直感的なUI<br/>で毎日続く</h2>
+    </div>
+    <div class="screens fade-in">
+      <!-- Screen 1: Weekly Progress -->
+      <div class="screen-card">
+        <div class="screen-title">📊 週間トレーニング量</div>
+        <div class="screen-visual">
+          <div class="mini-chart">
+            <div class="bar" style="height:40px"></div>
+            <div class="bar" style="height:65px"></div>
+            <div class="bar" style="height:50px"></div>
+            <div class="bar" style="height:80px;background:linear-gradient(180deg,var(--neon),rgba(0,245,212,0.3))"></div>
+            <div class="bar" style="height:55px"></div>
+            <div class="bar" style="height:30px;background:rgba(255,255,255,0.1)"></div>
+            <div class="bar" style="height:20px;background:rgba(255,255,255,0.1)"></div>
+          </div>
+          <div style="font-size:0.7rem;color:var(--muted);text-align:center">月 火 水 木 金 土 日</div>
+          <div style="text-align:center;font-weight:800;color:var(--neon)">今週: 4日達成 🎯</div>
+        </div>
+      </div>
+      <!-- Screen 2: Body Progress -->
+      <div class="screen-card">
+        <div class="screen-title">💪 体組成リング</div>
+        <div class="screen-visual">
+          <div class="mini-ring">
+            <div class="mini-ring-inner"></div>
+          </div>
+          <div style="text-align:center;font-size:0.75rem;color:var(--muted)">筋肉量目標達成率</div>
+          <div style="display:flex;justify-content:space-between;font-size:0.7rem;padding:0 4px">
+            <span>体脂肪率 <strong style="color:var(--accent)">18.3%</strong></span>
+            <span>筋肉量 <strong style="color:var(--neon)">62kg</strong></span>
+          </div>
+        </div>
+      </div>
+      <!-- Screen 3: Meal Log -->
+      <div class="screen-card">
+        <div class="screen-title">🍱 今日の食事ログ</div>
+        <div class="screen-visual">
+          <div class="food-item">🍳 卵2個・サラダ<span class="food-cal">320kcal</span></div>
+          <div class="food-item">🍗 鶏むね丼（200g）<span class="food-cal">480kcal</span></div>
+          <div class="food-item">🥤 プロテイン<span class="food-cal">150kcal</span></div>
+          <div style="margin-top:8px;background:rgba(108,99,255,0.15);border-radius:8px;padding:8px;text-align:center;font-size:0.72rem">
+            残り <strong style="color:var(--accent)">890kcal</strong> / 目標 1,840kcal
+          </div>
+        </div>
+      </div>
+      <!-- Screen 4: AI Chat -->
+      <div class="screen-card">
+        <div class="screen-title">🤖 AIコーチチャット</div>
+        <div class="screen-visual" style="gap:8px;align-items:stretch">
+          <div style="background:rgba(108,99,255,0.2);border-radius:12px 12px 12px 2px;padding:10px;font-size:0.72rem;color:var(--text)">
+            今日は肩が少し張っています。プッシュ系を軽めに調整しました 💡
+          </div>
+          <div style="background:rgba(255,255,255,0.06);border-radius:12px 12px 2px 12px;padding:10px;font-size:0.72rem;text-align:right">
+            ありがとう！腕も増やせる？
+          </div>
+          <div style="background:rgba(108,99,255,0.2);border-radius:12px 12px 12px 2px;padding:10px;font-size:0.72rem;color:var(--text)">
+            もちろんです🦾 カールを2セット追加しました！
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pricing">
+    <div class="text-center fade-in">
+      <div class="section-label">Pricing</div>
+      <h2 class="section-title">シンプルな料金体系<br/>（もちろん架空）</h2>
+      <p class="section-sub" style="margin:0 auto 60px">すべてのプランで7日間の無料トライアルが利用できます（架空の話です）。</p>
+    </div>
+    <div class="pricing-cards">
+      <div class="pricing-card fade-in">
+        <div class="plan-name">FREE</div>
+        <div class="plan-price">¥0<span class="per">/ 月</span></div>
+        <div class="plan-desc">まず試してみたい方へ</div>
+        <ul class="plan-features">
+          <li>基本AIトレーニング（週3回）</li>
+          <li>カロリーカウント</li>
+          <li>進捗グラフ（月次）</li>
+          <li class="no">食事プラン自動生成</li>
+          <li class="no">フォームチェックAI</li>
+          <li class="no">AIチャットコーチ</li>
+        </ul>
+        <a href="#" class="btn-plan outline">無料で始める</a>
+      </div>
+      <div class="pricing-card featured fade-in">
+        <div class="popular-tag">⚡ 最も人気（架空）</div>
+        <div class="plan-name">PRO</div>
+        <div class="plan-price">¥1,280<span class="per">/ 月</span></div>
+        <div class="plan-desc">本気で結果を出したい方へ</div>
+        <ul class="plan-features">
+          <li>無制限AIトレーニング</li>
+          <li>食事プラン自動生成</li>
+          <li>フォームチェックAI</li>
+          <li>AIチャットコーチ（24h）</li>
+          <li>週次進捗レポート</li>
+          <li class="no">専属トレーナーレビュー</li>
+        </ul>
+        <a href="#" class="btn-plan solid">7日間無料で試す</a>
+      </div>
+      <div class="pricing-card fade-in">
+        <div class="plan-name">ELITE</div>
+        <div class="plan-price">¥3,800<span class="per">/ 月</span></div>
+        <div class="plan-desc">最高のコーチングを求める方へ</div>
+        <ul class="plan-features">
+          <li>PROの全機能</li>
+          <li>月1回 架空トレーナーレビュー</li>
+          <li>ウェアラブル連携（架空）</li>
+          <li>優先カスタマーサポート</li>
+          <li>グループチャレンジ参加権</li>
+          <li>ファミリー共有（最大3名）</li>
+        </ul>
+        <a href="#" class="btn-plan outline">Eliteを始める</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials">
+    <div class="text-center fade-in">
+      <div class="section-label">Testimonials</div>
+      <h2 class="section-title">架空のユーザーの声</h2>
+      <p class="section-sub" style="margin:0 auto 60px">以下はすべて架空の体験談です。実際のレビューではありません。</p>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card fade-in">
+        <div class="stars">★★★★★</div>
+        <blockquote>「3ヶ月で体脂肪率が26%から18%に。毎日メニューが変わるので飽きないし、AIが体調を気にかけてくれるのが本物のトレーナーみたい。もう手放せません！」</blockquote>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:rgba(255,101,132,0.15)">👩</div>
+          <div>
+            <div class="testi-name">田中 さくら（架空）</div>
+            <div class="testi-role">会社員・32歳</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card fade-in">
+        <div class="stars">★★★★★</div>
+        <blockquote>「ジムに通う時間がなかったけど、AIronなら自宅でも本格的なトレーニングができる。食事管理まで一括でできるのが最高。ベンチプレスが20kg増えました。」</blockquote>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:rgba(108,99,255,0.15)">👨</div>
+          <div>
+            <div class="testi-name">鈴木 健太（架空）</div>
+            <div class="testi-role">フリーランス・28歳</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card fade-in">
+        <div class="stars">★★★★☆</div>
+        <blockquote>「産後ダイエットを試みていましたが、自分だけではモチベーションが続かなくて。AIコーチが毎日励ましてくれるので5ヶ月継続できました。体重-7kgです！」</blockquote>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:rgba(0,245,212,0.12)">👩</div>
+          <div>
+            <div class="testi-name">山田 みお（架空）</div>
+            <div class="testi-role">主婦・35歳</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="text-center fade-in">
+      <div class="section-label">FAQ</div>
+      <h2 class="section-title">よくある質問</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item fade-in">
+        <button class="faq-q" onclick="toggleFaq(this)">本当に架空のサービスですか？</button>
+        <div class="faq-a">はい、このサイトはポートフォリオ用に制作したデモサイトです。AIron というサービスは実在せず、料金プランへの申し込みボタンも機能しません。</div>
+      </div>
+      <div class="faq-item fade-in">
+        <button class="faq-q" onclick="toggleFaq(this)">（架空）運動経験がなくても使えますか？</button>
+        <div class="faq-a">もちろんです。AIronは初心者から上級者まで対応。最初のアンケートで経験レベルを設定すると、AIが適切な強度のメニューを組んでくれます。</div>
+      </div>
+      <div class="faq-item fade-in">
+        <button class="faq-q" onclick="toggleFaq(this)">（架空）ジムなしで自宅だけでも効果がありますか？</button>
+        <div class="faq-a">自重トレーニングを中心とした自宅向けプランを提供しています。ダンベルなどの器具があればさらに効果的ですが、道具なしでも十分なプランが組めます。</div>
+      </div>
+      <div class="faq-item fade-in">
+        <button class="faq-q" onclick="toggleFaq(this)">（架空）Apple Watch / Galaxy Watch と連携できますか？</button>
+        <div class="faq-a">ELITEプランではウェアラブルデバイスとの連携が可能です（架空の機能です）。心拍数・睡眠データをAIが自動で取り込みます。</div>
+      </div>
+      <div class="faq-item fade-in">
+        <button class="faq-q" onclick="toggleFaq(this)">（架空）解約はいつでもできますか？</button>
+        <div class="faq-a">もちろんです。いつでも解約でき、違約金も発生しません（架空の話です）。アプリの設定画面から数タップで解約手続きが完了します。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="fade-in">
+      <h2>さあ、今日から変わろう<br/>（架空のCTAです）</h2>
+      <p>7日間無料 · クレカ不要 · いつでも解約OK（すべて架空の条件です）</p>
+      <a href="#" class="btn-primary" style="display:inline-block;font-size:1.05rem">🚀 無料トライアルを始める（架空）</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="fiction-note">
+      ⚠️ このサイトはポートフォリオ掲載用の架空サービスLPです。AIron は実在しません。
+    </div>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo">AIron</div>
+        <p>AIが寄り添う、次世代のパーソナルトレーニング体験。（架空のサービスです）</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#">機能一覧</a></li>
+          <li><a href="#">料金プラン</a></li>
+          <li><a href="#">ダウンロード</a></li>
+          <li><a href="#">アップデート情報</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">会社概要</a></li>
+          <li><a href="#">採用情報</a></li>
+          <li><a href="#">プレスキット</a></li>
+          <li><a href="#">お問い合わせ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">利用規約</a></li>
+          <li><a href="#">プライバシーポリシー</a></li>
+          <li><a href="#">特定商取引法</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 AIron – 架空のサービス / ポートフォリオ用デモサイト</span>
+      <span>Designed as a fictional demo for portfolio purposes</span>
+    </div>
+  </footer>
+
+  <script>
+    // FAQ toggle
+    function toggleFaq(btn) {
+      const item = btn.closest('.faq-item');
+      item.classList.toggle('open');
+    }
+
+    // Scroll fade-in
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const delay = parseInt(entry.target.dataset.delay || 0);
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, delay * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.fade-in').forEach((el, i) => {
+      el.dataset.delay = i % 4;
+      observer.observe(el);
+    });
+
+    // Progress bar animation
+    const progressObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const fill = entry.target.querySelector('.progress-fill');
+          if (fill) {
+            const target = fill.style.width;
+            fill.style.width = '0%';
+            setTimeout(() => {
+              fill.style.transition = 'width 1.2s ease';
+              fill.style.width = target;
+            }, 300);
+          }
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.progress-bar-wrap').forEach(el => progressObserver.observe(el));
+
+    // Bar chart animation on page load
+    window.addEventListener('load', () => {
+      document.querySelectorAll('.bar').forEach((bar, i) => {
+        const h = bar.style.height;
+        bar.style.height = '0';
+        setTimeout(() => {
+          bar.style.transition = 'height 0.6s ease';
+          bar.style.height = h;
+        }, 600 + i * 80);
+      });
+    });
+  </script>
+</body>
+</html>
